@@ -1,19 +1,75 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import Colis from "./components/Colis";
+import Statistiques from "./components/Statistique";
+import Livreurs from "./components/Livreurs";
+import Tracking from "./components/Tracking";
+
+import reportWebVitals from "./reportWebVitals";
+import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
+import { UserIcon } from "lucide-react";
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+	document.getElementById("root") as HTMLElement
 );
 root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+	<BrowserRouter>
+		<nav className="flex  bg-white/90 justify-between items-center w-full py-1.5 px-5">
+			<div className="text-black text-lg font-bold">Logo</div>
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+			<ul className="flex flex-row items-center gap-4">
+				<li>
+					<Link
+						to="/colis"
+						className="text-black hover:text-gray-300 no-underline"
+					>
+						Colis
+					</Link>
+				</li>
+				<li>
+					<Link
+						to="/livreurs"
+						className="text-black hover:text-gray-300 no-underline"
+					>
+						Livreurs
+					</Link>
+				</li>
+				<li>
+					<Link
+						to="/statistique"
+						className="text-black hover:text-gray-300 no-underline"
+					>
+						Statistique
+					</Link>
+				</li>
+				<li>
+					<Link
+						to="/tracking"
+						className="text-black hover:text-gray-300 no-underline"
+					>
+						Tracking
+					</Link>
+				</li>
+			</ul>
+
+			<div className="flex items-center gap-5">
+				<div className="bg-gray-400 flex justify-center items-center h-[35px] w-[35px] rounded-full">
+					<UserIcon />
+				</div>
+				<div className="flex flex-col">
+					<p className="text-xs text-black">John Doe</p>
+					<span className="text-xs text-black">Founder</span>
+				</div>
+			</div>
+		</nav>
+
+		<Routes>
+			<Route path="/colis" element={<Colis />} />
+			<Route path="/" element={<Colis />} />
+			<Route path="/livreurs" element={<Livreurs />} />
+			<Route path="/statistique" element={<Statistiques />} />
+			<Route path="/tracking" element={<Tracking />} />
+		</Routes>
+	</BrowserRouter>
+);
 reportWebVitals();
