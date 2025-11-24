@@ -3,207 +3,531 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import AddIcon from "@mui/icons-material/Add";
+import CloseIcon from "@mui/icons-material/Close";
+import ClearIcon from "@mui/icons-material/Clear";
 
 function PageColis() {
-	const [colis, setColis] = React.useState([
-		{
-			numero: 1,
-			tracking: "TN12345",
-			nom: "Colis A",
-			quantity: 2,
-			price: 1500,
-			expediteur: "Alice",
-			destinataire: "Bob",
-			adresse: "Alger, Algérie",
-			statut: "En transit",
-			dateEnvoi: "20/11/2025",
-			dateLivraison: "25/11/2025",
-		},
-		{
-			numero: 2,
-			tracking: "TN12346",
-			nom: "Colis B",
-			quantity: 1,
-			price: 2500,
-			expediteur: "Charlie",
-			destinataire: "Ahmed",
-			adresse: "Oran, Algérie",
-			statut: "Livré",
-			dateEnvoi: "18/11/2025",
-			dateLivraison: "21/11/2025",
-		},
-		{
-			numero: 3,
-			tracking: "TN12347",
-			nom: "Colis C",
-			quantity: 1,
-			price: 1200,
-			expediteur: "Mohamed",
-			destinataire: "Sara",
-			adresse: "Constantine, Algérie",
-			statut: "Retourné",
-			dateEnvoi: "19/11/2025",
-			dateLivraison: "22/11/2025",
-		},
-	]);
+  const [showAddModal, setShowAddModal] = React.useState(false);
+  const [showEditModal, setShowEditModal] = React.useState(false);
+  const [editingColis, setEditingColis] = React.useState<string | null>(null);
+  const [newColis, setNewColis] = React.useState({
+    tracking: "",
+    nom: "",
+    quantity: "",
+    price: "",
+    expediteur: "",
+    destinataire: "",
+    numero: "",
+    adresse: "",
+    statut: "En transit",
+    dateEnvoi: "",
+    dateLivraison: "",
+  });
 
-	const [searchTerm, setSearchTerm] = React.useState("");
-	const [filteredColis, setFilteredColis] = React.useState(colis);
+  const [colis, setColis] = React.useState([
+    {
+      numero: 1,
+      tracking: "TN12345",
+      nom: "Colis A",
+      quantity: 2,
+      price: 1500,
+      expediteur: "Alice",
+      destinataire: "Bob",
+      adresse: "Alger, Algérie",
+      statut: "En transit",
+      dateEnvoi: "20/11/2025",
+      dateLivraison: "25/11/2025",
+    },
+    {
+      numero: 2,
+      tracking: "TN12346",
+      nom: "Colis B",
+      quantity: 1,
+      price: 2500,
+      expediteur: "Charlie",
+      destinataire: "Ahmed",
+      adresse: "Oran, Algérie",
+      statut: "Livré",
+      dateEnvoi: "18/11/2025",
+      dateLivraison: "21/11/2025",
+    },
+    {
+      numero: 3,
+      tracking: "TN12347",
+      nom: "Colis C",
+      quantity: 1,
+      price: 1200,
+      expediteur: "Mohamed",
+      destinataire: "Sara",
+      adresse: "Constantine, Algérie",
+      statut: "Retourné",
+      dateEnvoi: "19/11/2025",
+      dateLivraison: "22/11/2025",
+    },
+  ]);
 
-	React.useEffect(() => {
-		setFilteredColis(colis);
-	}, [colis]);
+  const [searchTerm, setSearchTerm] = React.useState("");
+  const [filteredColis, setFilteredColis] = React.useState(colis);
 
-	const handleDelete = (tracking: string) => {
-		setColis(colis.filter((c) => c.tracking !== tracking));
-	};
+  React.useEffect(() => {
+    setFilteredColis(colis);
+  }, [colis]);
 
-	const handleEdit = (tracking: string) => {
-		alert(`Modifier le colis ${tracking}`);
-	};
+  const handleDelete = (tracking: string) => {
+    setColis(colis.filter((c) => c.tracking !== tracking));
+  };
 
-	const applyFilter = React.useCallback(
-		(term: string) => {
-			const normalized = term.trim().toLowerCase();
-			if (!normalized) {
-				setFilteredColis(colis);
-				return;
-			}
+  const handleEdit = (tracking: string) => {
+    const colisToEdit = colis.find((c) => c.tracking === tracking);
+    if (colisToEdit) {
+      setEditingColis(tracking);
+      setNewColis({
+        tracking: colisToEdit.tracking,
+        nom: colisToEdit.nom,
+        quantity: colisToEdit.quantity.toString(),
+        price: colisToEdit.price.toString(),
+        expediteur: colisToEdit.expediteur,
+        destinataire: colisToEdit.destinataire,
+        numero: colisToEdit.numero.toString(),
+        adresse: colisToEdit.adresse,
+        statut: colisToEdit.statut,
+        dateEnvoi: colisToEdit.dateEnvoi,
+        dateLivraison: colisToEdit.dateLivraison,
+      });
+      setShowEditModal(true);
+    }
+  };
 
-			setFilteredColis(
-				colis.filter((c) =>
-					[
-						c.tracking,
-						c.nom,
-						c.expediteur,
-						c.destinataire,
-						c.statut,
-						c.adresse,
-					].some((field) => field.toLowerCase().includes(normalized))
-				)
-			);
-		},
-		[colis]
-	);
+  const handleAddColis = () => {
+    setShowAddModal(true);
+  };
 
-	React.useEffect(() => {
-		applyFilter(searchTerm);
-	}, [searchTerm, applyFilter]);
+  const handleCloseModal = () => {
+    setShowAddModal(false);
+    setShowEditModal(false);
+    setEditingColis(null);
+    setNewColis({
+      tracking: "",
+      nom: "",
+      quantity: "",
+      price: "",
+      expediteur: "",
+      destinataire: "",
+      numero: "",
+      adresse: "",
+      statut: "En transit",
+      dateEnvoi: "",
+      dateLivraison: "",
+    });
+  };
 
-	return (
-		<div className="font-roboto">
-			<div className="text-lg font-bold m-4">Colis list</div>
-			<div className="bg-gray-200 rounded-lg w-[98%] mx-auto p-4 relative bottom-0">
-				<div className="flex justify-between items-center p-0 px-4 mb-4">
-					<h3 className="text-[20px] font-normal">Colis :</h3>
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setNewColis((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
-					<div>
-						<input
-							type="text"
-							placeholder="Rechercher par tracking, nom, statut..."
-							value={searchTerm}
-							onChange={(e) => setSearchTerm(e.target.value)}
-							className="px-4 py-2 rounded-full border border-gray-300 bg-white min-w-[240px] text-sm outline-none focus:border-gray-400 focus:ring-2 focus:ring-blue-300"
-						/>
-					</div>
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const colisData = {
+      numero: parseInt(newColis.numero) || colis.length + 1,
+      tracking: newColis.tracking,
+      nom: newColis.nom,
+      quantity: parseInt(newColis.quantity) || 1,
+      price: parseInt(newColis.price) || 0,
+      expediteur: newColis.expediteur,
+      destinataire: newColis.destinataire,
+      adresse: newColis.adresse,
+      statut: newColis.statut,
+      dateEnvoi: newColis.dateEnvoi,
+      dateLivraison: newColis.dateLivraison,
+    };
 
-					<div className="flex gap-8">
-						<button className="bg-black text-white px-2 py-1 rounded-md cursor-pointer transition-transform hover:scale-105 flex items-center gap-1">
-							<AddIcon /> add colis
-						</button>
-						<button
-							className="bg-blue-600 text-white px-2 py-1 rounded-md cursor-pointer transition-transform hover:scale-105 flex items-center gap-1"
-							onClick={() => applyFilter(searchTerm)}
-						>
-							<FilterListIcon /> Filter
-						</button>
-					</div>
-				</div>
+    if (showEditModal && editingColis) {
+      // Modifier le colis existant
+      setColis(colis.map((c) => (c.tracking === editingColis ? colisData : c)));
+    } else {
+      // Ajouter un nouveau colis
+      setColis([...colis, colisData]);
+    }
+    handleCloseModal();
+  };
 
-				<div className="overflow-x-auto">
-					<table className="w-full table-fixed border-separate border-spacing-2 text-center text-black">
-						<thead>
-							<tr>
-								{[
-									"Tracking",
-									"Produit",
-									"Quantité",
-									"Prix",
-									"Expéditeur",
-									"Destinataire",
-									"Numéro",
-									"Adresse",
-									"Statut",
-									"Date Envoi",
-									"Date Livraison",
-									"Action",
-								].map((h) => (
-									<th key={h} className="p-2 font-bold">
-										{h}
-									</th>
-								))}
-							</tr>
-						</thead>
+  const applyFilter = React.useCallback(
+    (term: string) => {
+      const normalized = term.trim().toLowerCase();
+      if (!normalized) {
+        setFilteredColis(colis);
+        return;
+      }
 
-						<tbody>
-							{filteredColis.map((c) => (
-								<tr key={c.tracking} className=" rounded-md">
-									<td className="p-1 text-[14px] font-normal text-gray-700">
-										{c.tracking}
-									</td>
-									<td className="p-1 text-[14px] font-normal text-gray-700">
-										{c.nom}
-									</td>
-									<td className="p-1 text-[14px] font-normal text-gray-700">
-										{c.quantity}
-									</td>
-									<td className="p-1 text-[14px] font-normal text-gray-700">
-										{c.price}
-									</td>
-									<td className="p-1 text-[14px] font-normal text-gray-700">
-										{c.expediteur}
-									</td>
-									<td className="p-1 text-[14px] font-normal text-gray-700">
-										{c.destinataire}
-									</td>
-									<td className="p-1 text-[14px] font-normal text-gray-700">
-										{c.numero}
-									</td>
-									<td className="p-1 text-[14px] font-normal text-gray-700">
-										{c.adresse}
-									</td>
-									<td className="p-1 text-[14px] font-normal text-gray-700">
-										{c.statut}
-									</td>
-									<td className="p-1 text-[14px] font-normal text-gray-700">
-										{c.dateEnvoi}
-									</td>
-									<td className="p-1 text-[14px] font-normal text-gray-700">
-										{c.dateLivraison}
-									</td>
-									<td className="flex justify-center gap-2">
-										<button
-											className="bg-blue-600 text-white w-7 h-7 rounded-md cursor-pointer flex items-center justify-center"
-											onClick={() => handleEdit(c.tracking)}
-										>
-											<EditIcon fontSize="small" />
-										</button>
+      setFilteredColis(
+        colis.filter((c) =>
+          [
+            c.tracking,
+            c.nom,
+            c.expediteur,
+            c.destinataire,
+            c.statut,
+            c.adresse,
+          ].some((field) => field.toLowerCase().includes(normalized))
+        )
+      );
+    },
+    [colis]
+  );
 
-										<button
-											className="bg-red-600 text-white w-7 h-7 rounded-md cursor-pointer flex items-center justify-center"
-											onClick={() => handleDelete(c.tracking)}
-										>
-											<DeleteIcon fontSize="small" />
-										</button>
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-	);
+  React.useEffect(() => {
+    applyFilter(searchTerm);
+  }, [searchTerm, applyFilter]);
+
+  const handleResetFilter = () => {
+    setSearchTerm("");
+    setFilteredColis(colis);
+  };
+
+  return (
+    <div className="font-roboto">
+      <div className="text-lg font-bold m-4">Colis list</div>
+      <div className="bg-gray-200 rounded-lg w-[98%] mx-auto p-4 relative bottom-0">
+        <div className="flex justify-between items-center p-0 px-4 mb-4">
+          <h3 className="text-[20px] font-normal">Colis :</h3>
+
+          <div>
+            <input
+              type="text"
+              placeholder="Rechercher par tracking, nom, statut..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="px-4 py-2 rounded-full border border-gray-300 bg-white min-w-[240px] text-sm outline-none focus:border-gray-400 focus:ring-2 focus:ring-blue-300"
+            />
+          </div>
+
+          <div className="flex gap-4 items-center">
+            <button
+              onClick={handleAddColis}
+              className="bg-black text-white px-2 py-1 rounded-md cursor-pointer transition-transform hover:scale-105 flex items-center gap-1"
+            >
+              <AddIcon /> add colis
+            </button>
+            <button
+              className="bg-blue-600 text-white px-2 py-1 rounded-md cursor-pointer transition-transform hover:scale-105 flex items-center gap-1"
+              onClick={() => applyFilter(searchTerm)}
+            >
+              <FilterListIcon /> Filter
+            </button>
+            {searchTerm && (
+              <button
+                className="bg-gray-500 text-white px-2 py-1 rounded-md cursor-pointer transition-transform hover:scale-105 flex items-center gap-1"
+                onClick={handleResetFilter}
+                title="Réinitialiser les filtres"
+              >
+                <ClearIcon /> Réinitialiser
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full bg-white rounded-md  table-fixed border-separate border-spacing-2 text-center text-black">
+            <thead>
+              <tr>
+                {[
+                  "Tracking",
+                  "Produit",
+                  "Quantité",
+                  "Prix",
+                  "Expéditeur",
+                  "Destinataire",
+                  "Numéro",
+                  "Adresse",
+                  "Statut",
+                  "Date Envoi",
+                  "Date Livraison",
+                  "Action",
+                ].map((h) => (
+                  <th key={h} className="p-2 font-bold">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+
+            <tbody>
+              {filteredColis.map((c) => (
+                <tr key={c.tracking} className=" rounded-md">
+                  <td className="p-1 text-[14px] font-normal text-gray-700">
+                    {c.tracking}
+                  </td>
+                  <td className="p-1 text-[14px] font-normal text-gray-700">
+                    {c.nom}
+                  </td>
+                  <td className="p-1 text-[14px] font-normal text-gray-700">
+                    {c.quantity}
+                  </td>
+                  <td className="p-1 text-[14px] font-normal text-gray-700">
+                    {c.price}
+                  </td>
+                  <td className="p-1 text-[14px] font-normal text-gray-700">
+                    {c.expediteur}
+                  </td>
+                  <td className="p-1 text-[14px] font-normal text-gray-700">
+                    {c.destinataire}
+                  </td>
+                  <td className="p-1 text-[14px] font-normal text-gray-700">
+                    {c.numero}
+                  </td>
+                  <td className="p-1 text-[14px] font-normal text-gray-700">
+                    {c.adresse}
+                  </td>
+                  <td className="p-1 text-[14px] font-normal text-gray-700">
+                    {c.statut}
+                  </td>
+                  <td className="p-1 text-[14px] font-normal text-gray-700">
+                    {c.dateEnvoi}
+                  </td>
+                  <td className="p-1 text-[14px] font-normal text-gray-700">
+                    {c.dateLivraison}
+                  </td>
+                  <td className="flex justify-center gap-2">
+                    <button
+                      className="bg-blue-600 text-white w-7 h-7 rounded-md cursor-pointer flex items-center justify-center"
+                      onClick={() => handleEdit(c.tracking)}
+                    >
+                      <EditIcon fontSize="small" />
+                    </button>
+
+                    <button
+                      className="bg-red-600 text-white w-7 h-7 rounded-md cursor-pointer flex items-center justify-center"
+                      onClick={() => handleDelete(c.tracking)}
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Modal pour ajouter/modifier un colis */}
+      {(showAddModal || showEditModal) && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-[90%] max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold">
+                {showEditModal
+                  ? "Modifier le colis"
+                  : "Ajouter un nouveau colis"}
+              </h2>
+              <button
+                onClick={handleCloseModal}
+                className="text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                <CloseIcon />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Tracking *
+                  </label>
+                  <input
+                    type="text"
+                    name="tracking"
+                    value={newColis.tracking}
+                    onChange={handleInputChange}
+                    required
+                    disabled={showEditModal}
+                    className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      showEditModal ? "bg-gray-100 cursor-not-allowed" : ""
+                    }`}
+                    placeholder="TN12345"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Nom du produit *
+                  </label>
+                  <input
+                    type="text"
+                    name="nom"
+                    value={newColis.nom}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Colis A"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Quantité *
+                  </label>
+                  <input
+                    type="number"
+                    name="quantity"
+                    value={newColis.quantity}
+                    onChange={handleInputChange}
+                    required
+                    min="1"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="2"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Prix *
+                  </label>
+                  <input
+                    type="number"
+                    name="price"
+                    value={newColis.price}
+                    onChange={handleInputChange}
+                    required
+                    min="0"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="1500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Expéditeur *
+                  </label>
+                  <input
+                    type="text"
+                    name="expediteur"
+                    value={newColis.expediteur}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Alice"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Destinataire *
+                  </label>
+                  <input
+                    type="text"
+                    name="destinataire"
+                    value={newColis.destinataire}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Bob"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Numéro
+                  </label>
+                  <input
+                    type="number"
+                    name="numero"
+                    value={newColis.numero}
+                    onChange={handleInputChange}
+                    min="1"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Auto"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Statut *
+                  </label>
+                  <select
+                    name="statut"
+                    value={newColis.statut}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="En transit">En transit</option>
+                    <option value="Livré">Livré</option>
+                    <option value="Retourné">Retourné</option>
+                    <option value="En attente">En attente</option>
+                  </select>
+                </div>
+
+                <div className="col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Adresse *
+                  </label>
+                  <input
+                    type="text"
+                    name="adresse"
+                    value={newColis.adresse}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Alger, Algérie"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Date d'envoi *
+                  </label>
+                  <input
+                    type="date"
+                    name="dateEnvoi"
+                    value={newColis.dateEnvoi}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Date de livraison *
+                  </label>
+                  <input
+                    type="date"
+                    name="dateLivraison"
+                    value={newColis.dateLivraison}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3 mt-6">
+                <button
+                  type="button"
+                  onClick={handleCloseModal}
+                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition-colors"
+                >
+                  {showEditModal ? "Modifier" : "Ajouter"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default PageColis;
