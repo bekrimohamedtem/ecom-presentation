@@ -4,6 +4,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import AddIcon from "@mui/icons-material/Add";
 import ClearIcon from "@mui/icons-material/Clear";
+import CloseIcon from "@mui/icons-material/Close";
 
 function PageTracking() {
   const [trackings, setTrackings] = React.useState([
@@ -40,7 +41,12 @@ function PageTracking() {
   ]);
 
   const [searchTerm, setSearchTerm] = React.useState("");
-  const [filterStatut, setFilterStatut] = React.useState("");
+  const [showFilterModal, setShowFilterModal] = React.useState(false);
+  const [filters, setFilters] = React.useState({
+    statut: "",
+    expediteur: "",
+    destinataire: "",
+  });
   const [filteredTrackings, setFilteredTrackings] = React.useState(trackings);
 
   React.useEffect(() => {
@@ -56,7 +62,12 @@ function PageTracking() {
   };
 
   const applyFilter = React.useCallback(
-    (term: string, statutFilter: string) => {
+    (
+      term: string,
+      statutFilter?: string,
+      expediteurFilter?: string,
+      destinataireFilter?: string
+    ) => {
       let filtered = trackings;
 
       // Filtre par texte de recherche
@@ -74,24 +85,71 @@ function PageTracking() {
         filtered = filtered.filter((t) => t.statut === statutFilter);
       }
 
+      // Filtre par expéditeur
+      if (expediteurFilter) {
+        filtered = filtered.filter((t) => t.expediteur === expediteurFilter);
+      }
+
+      // Filtre par destinataire
+      if (destinataireFilter) {
+        filtered = filtered.filter(
+          (t) => t.destinataire === destinataireFilter
+        );
+      }
+
       setFilteredTrackings(filtered);
     },
     [trackings]
   );
 
   React.useEffect(() => {
-    applyFilter(searchTerm, filterStatut);
-  }, [searchTerm, filterStatut, applyFilter]);
+    applyFilter(
+      searchTerm,
+      filters.statut,
+      filters.expediteur,
+      filters.destinataire
+    );
+  }, [searchTerm, filters, applyFilter]);
 
   const handleFilter = () => {
-    applyFilter(searchTerm, filterStatut);
+    setShowFilterModal(true);
+  };
+
+  const handleApplyFilters = () => {
+    applyFilter(
+      searchTerm,
+      filters.statut,
+      filters.expediteur,
+      filters.destinataire
+    );
+    setShowFilterModal(false);
+  };
+
+  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleResetFilter = () => {
     setSearchTerm("");
-    setFilterStatut("");
+    setFilters({
+      statut: "",
+      expediteur: "",
+      destinataire: "",
+    });
     setFilteredTrackings(trackings);
   };
+
+  // Récupérer les valeurs uniques pour les filtres
+  const uniqueExpediteurs = Array.from(
+    new Set(trackings.map((t) => t.expediteur))
+  );
+  const uniqueDestinataires = Array.from(
+    new Set(trackings.map((t) => t.destinataire))
+  );
 
   return (
     <div className="font-sans p-4">
@@ -111,18 +169,7 @@ function PageTracking() {
             />
           </div>
 
-          <div className="flex">
-            <select
-              value={filterStatut}
-              onChange={(e) => setFilterStatut(e.target.value)}
-              className="px-3 py-2 rounded-md border border-gray-300 bg-white text-sm outline-none focus:border-gray-400 focus:ring-2 focus:ring-blue-300"
-            >
-              <option value="">Tous les statuts</option>
-              <option value="En transit">En transit</option>
-              <option value="Livré">Livré</option>
-              <option value="Retourné">Retourné</option>
-              <option value="En attente">En attente</option>
-            </select>
+          <div className="flex justify-center gap-4 items-center">
             <button
               className="flex items-center gap-1 bg-transparent text-transparent px-3 py-1 rounded-md hover:scale-105 transition-transform"
               onClick={() => alert("Ajouter un suivi")}
@@ -135,7 +182,10 @@ function PageTracking() {
             >
               <FilterListIcon /> Filtrer
             </button>
-            {(searchTerm || filterStatut) && (
+            {(searchTerm ||
+              filters.statut ||
+              filters.expediteur ||
+              filters.destinataire) && (
               <button
                 className="flex items-center gap-1 bg-gray-500 text-white px-3 py-1 rounded-md hover:scale-105 transition-transform"
                 onClick={handleResetFilter}
@@ -204,6 +254,98 @@ function PageTracking() {
           </table>
         </div>
       </div>
+
+      {/* Modal pour filtrer les trackings */}
+      {showFilterModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-[90%] max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold">Filtrer les trackings</h2>
+              <button
+                onClick={() => setShowFilterModal(false)}
+                className="text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                <CloseIcon />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Statut
+                </label>
+                <select
+                  name="statut"
+                  value={filters.statut}
+                  onChange={handleFilterChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Tous les statuts</option>
+                  <option value="En transit">En transit</option>
+                  <option value="Livré">Livré</option>
+                  <option value="Retourné">Retourné</option>
+                  <option value="En attente">En attente</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Expéditeur
+                </label>
+                <select
+                  name="expediteur"
+                  value={filters.expediteur}
+                  onChange={handleFilterChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Tous les expéditeurs</option>
+                  {uniqueExpediteurs.map((exp) => (
+                    <option key={exp} value={exp}>
+                      {exp}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Destinataire
+                </label>
+                <select
+                  name="destinataire"
+                  value={filters.destinataire}
+                  onChange={handleFilterChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Tous les destinataires</option>
+                  {uniqueDestinataires.map((dest) => (
+                    <option key={dest} value={dest}>
+                      {dest}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex justify-end gap-3 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setShowFilterModal(false)}
+                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="button"
+                  onClick={handleApplyFilters}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                >
+                  Appliquer
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

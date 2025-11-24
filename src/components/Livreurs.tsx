@@ -4,10 +4,12 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
+import ClearIcon from "@mui/icons-material/Clear";
 
 function PageLivreurs() {
   const [showAddModal, setShowAddModal] = React.useState(false);
   const [showEditModal, setShowEditModal] = React.useState(false);
+  const [showFilterModal, setShowFilterModal] = React.useState(false);
   const [editingLivreurId, setEditingLivreurId] = React.useState<number | null>(
     null
   );
@@ -18,6 +20,10 @@ function PageLivreurs() {
     email: "",
     ville: "",
     statut: "Actif",
+  });
+  const [filters, setFilters] = React.useState({
+    statut: "",
+    ville: "",
   });
 
   const [livreurs, setLivreurs] = React.useState([
@@ -53,10 +59,6 @@ function PageLivreurs() {
   const [searchTerm, setSearchTerm] = React.useState("");
   const [filteredLivreurs, setFilteredLivreurs] = React.useState(livreurs);
 
-  React.useEffect(() => {
-    setFilteredLivreurs(livreurs);
-  }, [livreurs]);
-
   const handleDelete = (id: number) => {
     setLivreurs(livreurs.filter((l) => l.id !== id));
   };
@@ -78,28 +80,62 @@ function PageLivreurs() {
   };
 
   const applyFilter = React.useCallback(
-    (term: string) => {
+    (term: string, statutFilter?: string, villeFilter?: string) => {
+      let filtered = livreurs;
+
+      // Filtre par texte de recherche
       const normalized = term.trim().toLowerCase();
-      if (!normalized) {
-        setFilteredLivreurs(livreurs);
-        return;
+      if (normalized) {
+        filtered = filtered.filter((l) =>
+          [l.nom, l.prenom, l.telephone, l.email, l.ville, l.statut].some(
+            (field) => field.toLowerCase().includes(normalized)
+          )
+        );
       }
-      const matches = livreurs.filter((l) =>
-        [l.nom, l.prenom, l.telephone, l.email, l.ville, l.statut].some(
-          (field) => field.toLowerCase().includes(normalized)
-        )
-      );
-      setFilteredLivreurs(matches);
+
+      // Filtre par statut
+      if (statutFilter) {
+        filtered = filtered.filter((l) => l.statut === statutFilter);
+      }
+
+      // Filtre par ville
+      if (villeFilter) {
+        filtered = filtered.filter((l) => l.ville === villeFilter);
+      }
+
+      setFilteredLivreurs(filtered);
     },
     [livreurs]
   );
 
   React.useEffect(() => {
-    applyFilter(searchTerm);
-  }, [searchTerm, applyFilter]);
+    applyFilter(searchTerm, filters.statut, filters.ville);
+  }, [searchTerm, filters, applyFilter, livreurs]);
 
   const handleFilter = () => {
-    applyFilter(searchTerm);
+    setShowFilterModal(true);
+  };
+
+  const handleApplyFilters = () => {
+    applyFilter(searchTerm, filters.statut, filters.ville);
+    setShowFilterModal(false);
+  };
+
+  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleResetFilters = () => {
+    setFilters({
+      statut: "",
+      ville: "",
+    });
+    setSearchTerm("");
+    setFilteredLivreurs(livreurs);
   };
 
   const handleAddLivreur = () => {
@@ -119,6 +155,13 @@ function PageLivreurs() {
       statut: "Actif",
     });
   };
+
+  const handleCloseFilterModal = () => {
+    setShowFilterModal(false);
+  };
+
+  // Récupérer les villes uniques pour le filtre
+  const uniqueVilles = Array.from(new Set(livreurs.map((l) => l.ville)));
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -183,6 +226,15 @@ function PageLivreurs() {
             >
               <FilterListIcon /> Filtrer
             </button>
+            {(searchTerm || filters.statut || filters.ville) && (
+              <button
+                className="flex items-center gap-1 bg-gray-500 text-white px-3 py-1 rounded-md hover:scale-105 transition-transform"
+                onClick={handleResetFilters}
+                title="Réinitialiser les filtres"
+              >
+                <ClearIcon /> Réinitialiser
+              </button>
+            )}
           </div>
         </div>
 
@@ -372,6 +424,77 @@ function PageLivreurs() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal pour filtrer les livreurs */}
+      {showFilterModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-[90%] max-w-md">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold">Filtrer les livreurs</h2>
+              <button
+                onClick={handleCloseFilterModal}
+                className="text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                <CloseIcon />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Statut
+                </label>
+                <select
+                  name="statut"
+                  value={filters.statut}
+                  onChange={handleFilterChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Tous les statuts</option>
+                  <option value="Actif">Actif</option>
+                  <option value="Inactif">Inactif</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Ville
+                </label>
+                <select
+                  name="ville"
+                  value={filters.ville}
+                  onChange={handleFilterChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Toutes les villes</option>
+                  {uniqueVilles.map((ville) => (
+                    <option key={ville} value={ville}>
+                      {ville}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex justify-end gap-3 mt-6">
+                <button
+                  type="button"
+                  onClick={handleCloseFilterModal}
+                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition-colors"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="button"
+                  onClick={handleApplyFilters}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                >
+                  Appliquer
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
