@@ -10,6 +10,70 @@ function PageLivreurs() {
   const [showAddModal, setShowAddModal] = React.useState(false);
   const [showEditModal, setShowEditModal] = React.useState(false);
   const [showFilterModal, setShowFilterModal] = React.useState(false);
+  const [colis, setColis] = React.useState([
+    {
+      numero: 1,
+      tracking: "TN12345",
+      nom: "Colis A",
+      quantity: 2,
+      price: 1500,
+      expediteur: "Alice",
+      destinataire: "Bob",
+    },
+    {
+      numero: 2,
+      tracking: "TN12346",
+      nom: "Colis B",
+      quantity: 1,
+      price: 2500,
+      expediteur: "Charlie",
+      destinataire: "Ahmed",
+    },
+  ]);
+  const [filteredColis, setFilteredColis] = React.useState([
+    {
+      numero: 1,
+      tracking: "TN12345",
+      nom: "Colis A",
+      quantity: 2,
+      price: 1500,
+      expediteur: "Alice",
+      destinataire: "Bob",
+      adresse: "Alger, Algérie",
+      statut: "En transit",
+      dateEnvoi: "20/11/2025",
+      dateLivraison: "25/11/2025",
+    },
+    {
+      numero: 2,
+      tracking: "TN12346",
+      nom: "Colis B",
+      quantity: 1,
+      price: 2500,
+      expediteur: "Charlie",
+      destinataire: "Ahmed",
+      adresse: "Oran, Algérie",
+      statut: "Livré",
+      dateEnvoi: "18/11/2025",
+      dateLivraison: "21/11/2025",
+    },
+    {
+      numero: 3,
+      tracking: "TN12347",
+      nom: "Colis C",
+      quantity: 1,
+      price: 1200,
+      expediteur: "Mohamed",
+      destinataire: "Sara",
+      adresse: "Constantine, Algérie",
+      statut: "Retourné",
+      dateEnvoi: "19/11/2025",
+      dateLivraison: "22/11/2025",
+    },
+  ]);
+  const [showAffecterColisModal, setShowAffecterColisModal] =
+    React.useState(false);
+  const [selectedColisIds, setSelectedColisIds] = React.useState<number[]>([]);
   const [editingLivreurId, setEditingLivreurId] = React.useState<number | null>(
     null
   );
@@ -118,7 +182,6 @@ function PageLivreurs() {
 
   const handleApplyFilters = () => {
     applyFilter(searchTerm, filters.statut, filters.ville);
-    setShowFilterModal(false);
   };
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -136,6 +199,10 @@ function PageLivreurs() {
     });
     setSearchTerm("");
     setFilteredLivreurs(livreurs);
+  };
+
+  const handlleaffectercolis = () => {
+    setShowAffecterColisModal(true);
   };
 
   const handleAddLivreur = () => {
@@ -249,6 +316,7 @@ function PageLivreurs() {
                   "Ville",
                   "Statut",
                   "Action",
+                  "Affecter colis",
                 ].map((head) => (
                   <th key={head} className="p-2">
                     {head}
@@ -289,6 +357,108 @@ function PageLivreurs() {
                       <DeleteIcon fontSize="small" />
                     </button>
                   </td>
+                  {/* Affectation des colis */}
+
+                  <td>
+                    <button
+                      onClick={handlleaffectercolis}
+                      className="bg-gray-600 text-white px-3 py-1 rounded-md hover:scale-105 transition-transform"
+                    >
+                      Affecter un colis
+                    </button>
+                    {showAffecterColisModal && (
+                      <div className="inset-0 fixed flex items-center justify-center  bg-black/10 ">
+                        <div className="rounded-md relative bg-white p-4 w-[50%] max-w-2xl min-h-[50vh] overflow-y-auto">
+                          <button
+                            className="bg-red-600 hover:bg-red-700 text-white w-7 h-7 rounded-md flex items-center justify-center"
+                            onClick={() => {
+                              setShowAffecterColisModal(false);
+                              setSelectedColisIds([]);
+                            }}
+                          >
+                            X
+                          </button>
+                          <h1 className="text-lg font-bold mb-4">
+                            Affectation des colis
+                          </h1>
+                          <div className="space-y-2 max-h-60 overflow-y-auto border rounded p-2">
+                            {filteredColis.length === 0 ? (
+                              <p className="text-gray-500 text-center py-4">
+                                Aucun colis disponible
+                              </p>
+                            ) : (
+                              filteredColis.map((c) => (
+                                <label
+                                  key={c.numero}
+                                  className={`flex items-center gap-3 p-3 border rounded cursor-pointer transition-colors ${
+                                    selectedColisIds.includes(c.numero)
+                                      ? "bg-blue-50 border-blue-300"
+                                      : "bg-white border-gray-200 hover:bg-gray-50"
+                                  }`}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedColisIds.includes(
+                                      c.numero
+                                    )}
+                                    onChange={() => {
+                                      setSelectedColisIds((prev) => {
+                                        if (prev.includes(c.numero)) {
+                                          return prev.filter(
+                                            (id) => id !== c.numero
+                                          );
+                                        } else {
+                                          return [...prev, c.numero];
+                                        }
+                                      });
+                                    }}
+                                    className="w-4 h-4 text-blue-600"
+                                    onClick={(e) => e.stopPropagation()}
+                                  />
+                                  <div className="flex-1">
+                                    <div className="font-medium">{c.nom}</div>
+                                    <div className="text-sm text-gray-500">
+                                      {c.tracking}
+                                    </div>
+                                  </div>
+                                </label>
+                              ))
+                            )}
+                          </div>
+                          {selectedColisIds.length > 0 && (
+                            <div className="mt-2 text-sm text-gray-600">
+                              {selectedColisIds.length} colis sélectionné
+                              {selectedColisIds.length > 1 ? "s" : ""}
+                            </div>
+                          )}
+                          <button
+                            className={`px-5 py-1 absolute bottom-[3%] right-[3%] rounded-md hover:scale-105 transition-transform ${
+                              selectedColisIds.length > 0
+                                ? "bg-blue-600 text-white"
+                                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                            }`}
+                            onClick={() => {
+                              if (selectedColisIds.length > 0) {
+                                // Ici vous pouvez affecter les colis sélectionnés au livreur
+                                // handleAffecterColis(selectedColisIds);
+                                console.log(
+                                  "Colis sélectionnés:",
+                                  selectedColisIds
+                                );
+                                setShowAffecterColisModal(false);
+                                setSelectedColisIds([]);
+                              }
+                            }}
+                            disabled={selectedColisIds.length === 0}
+                          >
+                            Affecter{" "}
+                            {selectedColisIds.length > 0 &&
+                              `(${selectedColisIds.length})`}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -298,7 +468,7 @@ function PageLivreurs() {
 
       {/* Modal pour ajouter/modifier un livreur */}
       {(showAddModal || showEditModal) && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0  bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-[90%] max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold">
