@@ -6,12 +6,16 @@ import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useSearch } from "../contexts/SearchContext";
+import Pagination from "./Pagination";
 
 function PageLivreurs() {
   const { searchTerm, setSearchTerm: setSearchTermContext } = useSearch();
   const [showAddModal, setShowAddModal] = React.useState(false);
   const [showEditModal, setShowEditModal] = React.useState(false);
   const [showFilterModal, setShowFilterModal] = React.useState(false);
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [itemsPerPage, setItemsPerPage] = React.useState(6);
+  const [showAll, setShowAll] = React.useState(false);
 
   const [colis, setColis] = React.useState([
     {
@@ -469,6 +473,20 @@ function PageLivreurs() {
     setFilteredLivreurs(livreurs);
   };
 
+  // Calcul de la pagination
+  const totalItems = filteredLivreurs.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedLivreurs = showAll
+    ? filteredLivreurs
+    : filteredLivreurs.slice(startIndex, endIndex);
+
+  // Réinitialiser à la page 1 quand les filtres changent
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filters]);
+
   const handlleaffectercolis = () => {
     setShowAffecterColisModal(true);
   };
@@ -534,9 +552,15 @@ function PageLivreurs() {
 
   return (
     <div className="font-sans p-6 bg-gray-200/70">
-      <div className="text-lg font-bold mb-4">Liste des livreurs</div>
+      <div className="text-lg font-bold mb-4">LIST VIEW</div>
       <div className="bg-white rounded-lg w-full mx-auto p-4">
-        <div className="flex justify-end items-center p-0 px-4 mb-4">
+        <div className="flex justify-between items-center p-0 px-4 mb-4">
+          <h2 className="text-md font-bold">
+            Livreurs List{" "}
+            <span className="text-sm bg-violet-500 text-white ml-2 px-2 py-0.5 rounded-md">
+              {filteredLivreurs.length}
+            </span>
+          </h2>
           <div className="flex gap-4 ">
             <button
               className="flex items-center gap-1 bg-black text-white px-3 py-1 rounded-md hover:scale-105 transition-transform"
@@ -563,9 +587,9 @@ function PageLivreurs() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full bg-white rounded-md table-fixed border-separate border-spacing-2 text-center text-gray-800">
+          <table className="w-full bg-white rounded-md table-fixed text-center text-gray-800">
             <thead>
-              <tr className="font-bold ">
+              <tr className="font-bold bg-gray-100">
                 {[
                   "Nom",
                   "Prénom",
@@ -583,7 +607,7 @@ function PageLivreurs() {
             </thead>
 
             <tbody>
-              {filteredLivreurs.map((l) => (
+              {paginatedLivreurs.map((l) => (
                 <tr key={l.id} className=" rounded-md">
                   <td className="p-1 text-[14px] font-normal text-gray-700">
                     {l.nom}
@@ -723,6 +747,19 @@ function PageLivreurs() {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination */}
+        {totalItems > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            itemsPerPage={itemsPerPage}
+            totalItems={totalItems}
+            showAll={showAll}
+            onShowAll={setShowAll}
+          />
+        )}
       </div>
 
       {/* Modal pour ajouter/modifier un livreur */}

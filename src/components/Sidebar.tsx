@@ -1,12 +1,12 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import Inventory2Icon from "@mui/icons-material/Inventory2";
-import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
-import DeliveryDiningIcon from "@mui/icons-material/DeliveryDining";
-import AssessmentIcon from "@mui/icons-material/Assessment";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import RouteIcon from "@mui/icons-material/Route";
+import PersonIcon from "@mui/icons-material/Person";
+import BarChartIcon from "@mui/icons-material/BarChart";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import { UserIcon } from "lucide-react";
+import { Package2, UserIcon } from "lucide-react";
 import { useSidebar } from "../contexts/SidebarContext";
 
 function Sidebar() {
@@ -51,7 +51,7 @@ function Sidebar() {
                 }
                 title={!isOpen ? "Colis" : ""}
               >
-                <Inventory2Icon />
+                <Package2 size={25} />
                 {isOpen && <span>Colis</span>}
               </NavLink>
             </li>
@@ -70,7 +70,7 @@ function Sidebar() {
                 }
                 title={!isOpen ? "Livreurs" : ""}
               >
-                <DeliveryDiningIcon />
+                <LocalShippingIcon />
                 {isOpen && <span>Livreurs</span>}
               </NavLink>
             </li>
@@ -89,7 +89,7 @@ function Sidebar() {
                 }
                 title={!isOpen ? "Tracking" : ""}
               >
-                <FlightTakeoffIcon />
+                <RouteIcon />
                 {isOpen && <span>Tracking</span>}
               </NavLink>
             </li>
@@ -108,7 +108,7 @@ function Sidebar() {
                 }
                 title={!isOpen ? "Statistique" : ""}
               >
-                <AssessmentIcon />
+                <BarChartIcon />
                 {isOpen && <span>Statistique</span>}
               </NavLink>
             </li>

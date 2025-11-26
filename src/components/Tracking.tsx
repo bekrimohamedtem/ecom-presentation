@@ -6,6 +6,7 @@ import AddIcon from "@mui/icons-material/Add";
 import ClearIcon from "@mui/icons-material/Clear";
 import CloseIcon from "@mui/icons-material/Close";
 import { useSearch } from "../contexts/SearchContext";
+import Pagination from "./Pagination";
 
 function PageTracking() {
   const { searchTerm, setSearchTerm: setSearchTermContext } = useSearch();
@@ -148,6 +149,9 @@ function PageTracking() {
     expediteur: "",
     destinataire: "",
   });
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [itemsPerPage, setItemsPerPage] = React.useState(6);
+  const [showAll, setShowAll] = React.useState(false);
   const [filteredTrackings, setFilteredTrackings] = React.useState(trackings);
 
   React.useEffect(() => {
@@ -252,18 +256,32 @@ function PageTracking() {
     new Set(trackings.map((t) => t.destinataire))
   );
 
+  // Calcul de la pagination
+  const totalItems = filteredTrackings.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedTrackings = showAll
+    ? filteredTrackings
+    : filteredTrackings.slice(startIndex, endIndex);
+
+  // Réinitialiser à la page 1 quand les filtres changent
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filters]);
+
   return (
     <div className="font-sans p-6 bg-gray-200/70">
-      <div className="text-lg font-bold mb-4">Liste de suivi </div>
+      <div className="text-lg font-bold mb-4">LIST VIEW</div>
       <div className="bg-white rounded-lg w-full mx-auto p-4">
         <div className="flex justify-between items-center p-0 px-4 mb-4">
-          <div className="flex justify-center gap-4 items-center">
-            <button
-              className="flex items-center gap-1 bg-transparent text-transparent px-3 py-1 rounded-md hover:scale-105 transition-transform"
-              onClick={() => alert("Ajouter un suivi")}
-            >
-              <AddIcon /> Ajouter
-            </button>
+          <h2 className="text-md font-bold">
+            Tracking List{" "}
+            <span className="text-sm bg-violet-500 text-white ml-2 px-2 py-0.5 rounded-md">
+              {filteredTrackings.length}
+            </span>
+          </h2>
+          <div className="flex-1 flex justify-end gap-4 items-center">
             <button
               className="flex items-center gap-1 bg-blue-600 text-white px-3 py-1 rounded-md hover:scale-105 transition-transform"
               onClick={handleFilter}
@@ -286,9 +304,9 @@ function PageTracking() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full bg-white rounded-md table-fixed border-separate border-spacing-2 text-center text-gray-800">
+          <table className="w-full bg-white rounded-md table-fixed text-center text-gray-800">
             <thead>
-              <tr className="font-bold ">
+              <tr className="font-bold bg-gray-100">
                 {[
                   "Tracking",
                   "Colis",
@@ -307,7 +325,7 @@ function PageTracking() {
             </thead>
 
             <tbody>
-              {filteredTrackings.map((t) => (
+              {paginatedTrackings.map((t) => (
                 <tr key={t.id} className=" rounded-md">
                   <td className="p-1 text-[14px] font-normal text-gray-700">
                     {t.tracking}
@@ -341,6 +359,19 @@ function PageTracking() {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination */}
+        {totalItems > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            itemsPerPage={itemsPerPage}
+            totalItems={totalItems}
+            showAll={showAll}
+            onShowAll={setShowAll}
+          />
+        )}
       </div>
 
       {/* Modal pour filtrer les trackings */}

@@ -6,6 +6,7 @@ import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import ClearIcon from "@mui/icons-material/Clear";
 import { useSearch } from "../contexts/SearchContext";
+import Pagination from "./Pagination";
 
 function PageColis() {
   const { searchTerm, setSearchTerm: setSearchTermContext } = useSearch();
@@ -18,6 +19,9 @@ function PageColis() {
     expediteur: "",
     destinataire: "",
   });
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [itemsPerPage, setItemsPerPage] = React.useState(6);
+  const [showAll, setShowAll] = React.useState(false);
   const [newColis, setNewColis] = React.useState({
     tracking: "",
     nom: "",
@@ -348,11 +352,31 @@ function PageColis() {
     new Set(colis.map((c) => c.destinataire))
   );
 
+  // Calcul de la pagination
+  const totalItems = filteredColis.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedColis = showAll
+    ? filteredColis
+    : filteredColis.slice(startIndex, endIndex);
+
+  // Réinitialiser à la page 1 quand les filtres changent
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filters]);
+
   return (
     <div className="font-roboto p-6 bg-gray-200/70">
-      <div className="text-lg font-bold mb-4">Liste des colis</div>
+      <div className="text-lg font-bold mb-4">LIST VIEW</div>
       <div className="bg-white rounded-lg w-full mx-auto p-4">
-        <div className="flex justify-end items-center p-0 px-4 mb-4">
+        <div className="flex justify-between items-center p-0 px-4 mb-4">
+          <h2 className="text-md font-bold">
+            Colis List{" "}
+            <span className="text-sm bg-violet-500 text-white ml-2 px-2 py-0.5 rounded-md">
+              {filteredColis.length}
+            </span>
+          </h2>
           <div className="flex gap-4 items-center">
             <button
               onClick={handleAddColis}
@@ -382,9 +406,9 @@ function PageColis() {
         </div>
 
         <div className="overflow-x-auto w-full">
-          <table className="min-w-full bg-white rounded-md table-auto border-separate border-spacing-2 text-center text-black">
+          <table className="w-full bg-white rounded-md table-fixed text-center text-gray-800">
             <thead>
-              <tr>
+              <tr className="font-bold bg-gray-100">
                 {[
                   "Tracking",
                   "Produit",
@@ -407,7 +431,7 @@ function PageColis() {
             </thead>
 
             <tbody>
-              {filteredColis.map((c) => (
+              {paginatedColis.map((c) => (
                 <tr key={c.tracking} className=" rounded-md mb-5">
                   <td className="p-1 text-[14px] font-normal text-gray-700">
                     {c.tracking}
@@ -462,6 +486,19 @@ function PageColis() {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination */}
+        {totalItems > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+            itemsPerPage={itemsPerPage}
+            totalItems={totalItems}
+            showAll={showAll}
+            onShowAll={setShowAll}
+          />
+        )}
       </div>
 
       {/* Modal pour ajouter/modifier un colis */}

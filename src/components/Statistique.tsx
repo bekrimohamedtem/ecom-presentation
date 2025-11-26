@@ -68,7 +68,7 @@ function StatCard({ stat }: { stat: StatusStat }) {
 function TrendBar({ day }: { day: DailyTrend }) {
 	const maxValue = 280;
 	return (
-		<div className="flex flex-col gap-1 text-xs font-medium text-slate-700">
+		<div className="flex flex-col  gap-1 text-xs font-medium text-slate-700">
 			<div className="flex justify-between">
 				<span>{day.day}</span>
 				<span className="text-slate-400">{day.delivered} livrés</span>
@@ -89,7 +89,7 @@ function TrendBar({ day }: { day: DailyTrend }) {
 
 const PageStatistique: FC = () => {
 	return (
-		<div className="w-full min-h-screen bg-gray-50 font-sans p-6">
+		<div className="w-full bg-gray-200/70 min-h-screen  font-sans p-6">
 			<div className="max-w-[1200px] mx-auto">
 				<header className="mb-6">
 					<p className="text-sm font-semibold uppercase tracking-widest text-slate-500">
