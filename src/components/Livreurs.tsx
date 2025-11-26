@@ -454,6 +454,7 @@ function PageLivreurs() {
 
   const handleApplyFilters = () => {
     applyFilter(searchTerm, filters.statut, filters.ville);
+    setShowFilterModal(false);
   };
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
