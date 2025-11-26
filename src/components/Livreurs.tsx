@@ -586,7 +586,7 @@ function PageLivreurs() {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto w-full">
           <table className="w-full bg-white rounded-md table-fixed text-center text-gray-800">
             <thead>
               <tr className="font-bold bg-gray-100">
@@ -599,7 +599,7 @@ function PageLivreurs() {
                   "Action",
                   "Affecter colis",
                 ].map((head) => (
-                  <th key={head} className="p-2">
+                  <th key={head} className="p-2 font-bold">
                     {head}
                   </th>
                 ))}
@@ -608,7 +608,7 @@ function PageLivreurs() {
 
             <tbody>
               {paginatedLivreurs.map((l) => (
-                <tr key={l.id} className=" rounded-md">
+                <tr key={l.id} className=" rounded-md mb-5">
                   <td className="p-1 text-[14px] font-normal text-gray-700">
                     {l.nom}
                   </td>
@@ -640,7 +640,7 @@ function PageLivreurs() {
                   </td>
                   {/* Affectation des colis */}
 
-                  <td>
+                  <td className="p-2">
                     <button
                       onClick={handlleaffectercolis}
                       className="bg-gray-600 text-white px-3 py-1 rounded-md hover:scale-105 transition-transform"

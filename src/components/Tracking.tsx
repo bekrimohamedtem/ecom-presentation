@@ -303,7 +303,7 @@ function PageTracking() {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto w-full">
           <table className="w-full bg-white rounded-md table-fixed text-center text-gray-800">
             <thead>
               <tr className="font-bold bg-gray-100">
@@ -317,7 +317,7 @@ function PageTracking() {
                   "Date Livraison",
                   "Action",
                 ].map((head) => (
-                  <th key={head} className="p-2">
+                  <th key={head} className="p-2 font-bold">
                     {head}
                   </th>
                 ))}
@@ -326,14 +326,16 @@ function PageTracking() {
 
             <tbody>
               {paginatedTrackings.map((t) => (
-                <tr key={t.id} className=" rounded-md">
+                <tr key={t.id} className=" rounded-md mb-5">
                   <td className="p-1 text-[14px] font-normal text-gray-700">
                     {t.tracking}
                   </td>
                   <td className="p-1 text-[14px] font-normal text-gray-700">
                     {t.nom}
                   </td>
-                  <td className="p-2">{t.statut}</td>
+                  <td className="p-1 text-[14px] font-normal text-gray-700">
+                    {t.statut}
+                  </td>
                   <td className="p-1 text-[14px] font-normal text-gray-700">
                     {t.expediteur}
                   </td>

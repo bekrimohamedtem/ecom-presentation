@@ -466,7 +466,7 @@ function PageColis() {
                   <td className="p-1 text-[14px] font-normal text-gray-700">
                     {c.dateLivraison}
                   </td>
-                  <td className="flex justify-center gap-2">
+                  <td className="flex justify-center gap-2 p-2">
                     <button
                       className="bg-blue-600 text-white w-7 h-7 rounded-md cursor-pointer flex items-center justify-center"
                       onClick={() => handleEdit(c.tracking)}
