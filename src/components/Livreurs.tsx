@@ -5,11 +5,14 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import ClearIcon from "@mui/icons-material/Clear";
+import { useSearch } from "../contexts/SearchContext";
 
 function PageLivreurs() {
+  const { searchTerm, setSearchTerm: setSearchTermContext } = useSearch();
   const [showAddModal, setShowAddModal] = React.useState(false);
   const [showEditModal, setShowEditModal] = React.useState(false);
   const [showFilterModal, setShowFilterModal] = React.useState(false);
+
   const [colis, setColis] = React.useState([
     {
       numero: 1,
@@ -19,6 +22,10 @@ function PageLivreurs() {
       price: 1500,
       expediteur: "Alice",
       destinataire: "Bob",
+      adresse: "Alger, Algérie",
+      statut: "En transit",
+      dateEnvoi: "20/11/2025",
+      dateLivraison: "25/11/2025",
     },
     {
       numero: 2,
@@ -28,6 +35,114 @@ function PageLivreurs() {
       price: 2500,
       expediteur: "Charlie",
       destinataire: "Ahmed",
+      adresse: "Oran, Algérie",
+      statut: "Livré",
+      dateEnvoi: "18/11/2025",
+      dateLivraison: "21/11/2025",
+    },
+    {
+      numero: 3,
+      tracking: "TN12347",
+      nom: "Colis C",
+      quantity: 1,
+      price: 1200,
+      expediteur: "Mohamed",
+      destinataire: "Sara",
+      adresse: "Constantine, Algérie",
+      statut: "Retourné",
+      dateEnvoi: "19/11/2025",
+      dateLivraison: "22/11/2025",
+    },
+    {
+      numero: 4,
+      tracking: "TN12348",
+      nom: "Colis D",
+      quantity: 3,
+      price: 3200,
+      expediteur: "Fatima",
+      destinataire: "Youssef",
+      adresse: "Blida, Algérie",
+      statut: "En transit",
+      dateEnvoi: "21/11/2025",
+      dateLivraison: "26/11/2025",
+    },
+    {
+      numero: 5,
+      tracking: "TN12349",
+      nom: "Colis E",
+      quantity: 1,
+      price: 1800,
+      expediteur: "Karim",
+      destinataire: "Lina",
+      adresse: "Tizi Ouzou, Algérie",
+      statut: "En attente",
+      dateEnvoi: "22/11/2025",
+      dateLivraison: "27/11/2025",
+    },
+    {
+      numero: 6,
+      tracking: "TN12350",
+      nom: "Colis F",
+      quantity: 2,
+      price: 2100,
+      expediteur: "Nadia",
+      destinataire: "Omar",
+      adresse: "Béjaïa, Algérie",
+      statut: "Livré",
+      dateEnvoi: "17/11/2025",
+      dateLivraison: "20/11/2025",
+    },
+    {
+      numero: 7,
+      tracking: "TN12351",
+      nom: "Colis G",
+      quantity: 1,
+      price: 950,
+      expediteur: "Samir",
+      destinataire: "Leila",
+      adresse: "Annaba, Algérie",
+      statut: "En transit",
+      dateEnvoi: "23/11/2025",
+      dateLivraison: "28/11/2025",
+    },
+    {
+      numero: 8,
+      tracking: "TN12352",
+      nom: "Colis H",
+      quantity: 4,
+      price: 4500,
+      expediteur: "Amel",
+      destinataire: "Rachid",
+      adresse: "Sétif, Algérie",
+      statut: "Livré",
+      dateEnvoi: "16/11/2025",
+      dateLivraison: "19/11/2025",
+    },
+    {
+      numero: 9,
+      tracking: "TN12353",
+      nom: "Colis I",
+      quantity: 1,
+      price: 1350,
+      expediteur: "Bilal",
+      destinataire: "Salma",
+      adresse: "Batna, Algérie",
+      statut: "Retourné",
+      dateEnvoi: "15/11/2025",
+      dateLivraison: "18/11/2025",
+    },
+    {
+      numero: 10,
+      tracking: "TN12354",
+      nom: "Colis J",
+      quantity: 2,
+      price: 2800,
+      expediteur: "Djamila",
+      destinataire: "Tarek",
+      adresse: "Mostaganem, Algérie",
+      statut: "En attente",
+      dateEnvoi: "24/11/2025",
+      dateLivraison: "29/11/2025",
     },
   ]);
   const [filteredColis, setFilteredColis] = React.useState([
@@ -69,6 +184,97 @@ function PageLivreurs() {
       statut: "Retourné",
       dateEnvoi: "19/11/2025",
       dateLivraison: "22/11/2025",
+    },
+    {
+      numero: 4,
+      tracking: "TN12348",
+      nom: "Colis D",
+      quantity: 3,
+      price: 3200,
+      expediteur: "Fatima",
+      destinataire: "Youssef",
+      adresse: "Blida, Algérie",
+      statut: "En transit",
+      dateEnvoi: "21/11/2025",
+      dateLivraison: "26/11/2025",
+    },
+    {
+      numero: 5,
+      tracking: "TN12349",
+      nom: "Colis E",
+      quantity: 1,
+      price: 1800,
+      expediteur: "Karim",
+      destinataire: "Lina",
+      adresse: "Tizi Ouzou, Algérie",
+      statut: "En attente",
+      dateEnvoi: "22/11/2025",
+      dateLivraison: "27/11/2025",
+    },
+    {
+      numero: 6,
+      tracking: "TN12350",
+      nom: "Colis F",
+      quantity: 2,
+      price: 2100,
+      expediteur: "Nadia",
+      destinataire: "Omar",
+      adresse: "Béjaïa, Algérie",
+      statut: "Livré",
+      dateEnvoi: "17/11/2025",
+      dateLivraison: "20/11/2025",
+    },
+    {
+      numero: 7,
+      tracking: "TN12351",
+      nom: "Colis G",
+      quantity: 1,
+      price: 950,
+      expediteur: "Samir",
+      destinataire: "Leila",
+      adresse: "Annaba, Algérie",
+      statut: "En transit",
+      dateEnvoi: "23/11/2025",
+      dateLivraison: "28/11/2025",
+    },
+    {
+      numero: 8,
+      tracking: "TN12352",
+      nom: "Colis H",
+      quantity: 4,
+      price: 4500,
+      expediteur: "Amel",
+      destinataire: "Rachid",
+      adresse: "Sétif, Algérie",
+      statut: "Livré",
+      dateEnvoi: "16/11/2025",
+      dateLivraison: "19/11/2025",
+    },
+    {
+      numero: 9,
+      tracking: "TN12353",
+      nom: "Colis I",
+      quantity: 1,
+      price: 1350,
+      expediteur: "Bilal",
+      destinataire: "Salma",
+      adresse: "Batna, Algérie",
+      statut: "Retourné",
+      dateEnvoi: "15/11/2025",
+      dateLivraison: "18/11/2025",
+    },
+    {
+      numero: 10,
+      tracking: "TN12354",
+      nom: "Colis J",
+      quantity: 2,
+      price: 2800,
+      expediteur: "Djamila",
+      destinataire: "Tarek",
+      adresse: "Mostaganem, Algérie",
+      statut: "En attente",
+      dateEnvoi: "24/11/2025",
+      dateLivraison: "29/11/2025",
     },
   ]);
   const [showAffecterColisModal, setShowAffecterColisModal] =
@@ -118,9 +324,71 @@ function PageLivreurs() {
       ville: "Constantine",
       statut: "Actif",
     },
+    {
+      id: 4,
+      nom: "Yasmina",
+      prenom: "Kacem",
+      telephone: "0555234987",
+      email: "yasmina.kacem@example.com",
+      ville: "Blida",
+      statut: "Actif",
+    },
+    {
+      id: 5,
+      nom: "Karim",
+      prenom: "Benali",
+      telephone: "0555321789",
+      email: "karim.benali@example.com",
+      ville: "Tizi Ouzou",
+      statut: "En congé",
+    },
+    {
+      id: 6,
+      nom: "Fatima",
+      prenom: "Rahmani",
+      telephone: "0555098741",
+      email: "fatima.rahmani@example.com",
+      ville: "Sétif",
+      statut: "Actif",
+    },
+    {
+      id: 7,
+      nom: "Rachid",
+      prenom: "Touati",
+      telephone: "0555674321",
+      email: "rachid.touati@example.com",
+      ville: "Annaba",
+      statut: "Inactif",
+    },
+    {
+      id: 8,
+      nom: "Nadia",
+      prenom: "Boualem",
+      telephone: "0555543210",
+      email: "nadia.boualem@example.com",
+      ville: "Béjaïa",
+      statut: "Actif",
+    },
+    {
+      id: 9,
+      nom: "Omar",
+      prenom: "Djellal",
+      telephone: "0555765432",
+      email: "omar.djellal@example.com",
+      ville: "Batna",
+      statut: "Actif",
+    },
+    {
+      id: 10,
+      nom: "Leila",
+      prenom: "Mokhtari",
+      telephone: "0555123987",
+      email: "leila.mokhtari@example.com",
+      ville: "Mostaganem",
+      statut: "En congé",
+    },
   ]);
 
-  const [searchTerm, setSearchTerm] = React.useState("");
   const [filteredLivreurs, setFilteredLivreurs] = React.useState(livreurs);
 
   const handleDelete = (id: number) => {
@@ -197,7 +465,7 @@ function PageLivreurs() {
       statut: "",
       ville: "",
     });
-    setSearchTerm("");
+    setSearchTermContext("");
     setFilteredLivreurs(livreurs);
   };
 
@@ -265,22 +533,11 @@ function PageLivreurs() {
   };
 
   return (
-    <div className="font-sans bg-gray-200/70 h-full p-4">
+    <div className="font-sans p-6 bg-gray-200/70">
       <div className="text-lg font-bold mb-4">Liste des livreurs</div>
-
-      <div className="bg-gray-200/30 rounded-lg p-4 w-[98%] mx-auto">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-normal">Livreurs :</h3>
-
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-            placeholder="Rechercher par nom, téléphone, ville..."
-            className="px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300 min-w-[240px]"
-          />
-
-          <div className="flex gap-4">
+      <div className="bg-white rounded-lg w-full mx-auto p-4">
+        <div className="flex justify-end items-center p-0 px-4 mb-4">
+          <div className="flex gap-4 ">
             <button
               className="flex items-center gap-1 bg-black text-white px-3 py-1 rounded-md hover:scale-105 transition-transform"
               onClick={handleAddLivreur}
@@ -382,47 +639,49 @@ function PageLivreurs() {
                             Affectation des colis
                           </h1>
                           <div className="space-y-2 max-h-60 overflow-y-auto border rounded p-2">
-                            {filteredColis.length === 0 ? (
+                            {colis.length === 0 ? (
                               <p className="text-gray-500 text-center py-4">
                                 Aucun colis disponible
                               </p>
                             ) : (
-                              filteredColis.map((c) => (
-                                <label
-                                  key={c.numero}
-                                  className={`flex items-center gap-3 p-3 border rounded cursor-pointer transition-colors ${
-                                    selectedColisIds.includes(c.numero)
-                                      ? "bg-blue-50 border-blue-300"
-                                      : "bg-white border-gray-200 hover:bg-gray-50"
-                                  }`}
-                                >
-                                  <input
-                                    type="checkbox"
-                                    checked={selectedColisIds.includes(
-                                      c.numero
-                                    )}
-                                    onChange={() => {
-                                      setSelectedColisIds((prev) => {
-                                        if (prev.includes(c.numero)) {
-                                          return prev.filter(
-                                            (id) => id !== c.numero
-                                          );
-                                        } else {
-                                          return [...prev, c.numero];
-                                        }
-                                      });
-                                    }}
-                                    className="w-4 h-4 text-blue-600"
-                                    onClick={(e) => e.stopPropagation()}
-                                  />
-                                  <div className="flex-1">
-                                    <div className="font-medium">{c.nom}</div>
-                                    <div className="text-sm text-gray-500">
-                                      {c.tracking}
+                              colis
+                                .filter((c) => c.statut === "En transit")
+                                .map((c) => (
+                                  <label
+                                    key={c.numero}
+                                    className={`flex items-center gap-3 p-3 border rounded cursor-pointer transition-colors ${
+                                      selectedColisIds.includes(c.numero)
+                                        ? "bg-blue-50 border-blue-300"
+                                        : "bg-white border-gray-200 hover:bg-gray-50"
+                                    }`}
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      checked={selectedColisIds.includes(
+                                        c.numero
+                                      )}
+                                      onChange={() => {
+                                        setSelectedColisIds((prev) => {
+                                          if (prev.includes(c.numero)) {
+                                            return prev.filter(
+                                              (id) => id !== c.numero
+                                            );
+                                          } else {
+                                            return [...prev, c.numero];
+                                          }
+                                        });
+                                      }}
+                                      className="w-4 h-4 text-blue-600"
+                                      onClick={(e) => e.stopPropagation()}
+                                    />
+                                    <div className="flex-1">
+                                      <div className="font-medium">{c.nom}</div>
+                                      <div className="text-sm text-gray-500">
+                                        {c.tracking}
+                                      </div>
                                     </div>
-                                  </div>
-                                </label>
-                              ))
+                                  </label>
+                                ))
                             )}
                           </div>
                           {selectedColisIds.length > 0 && (

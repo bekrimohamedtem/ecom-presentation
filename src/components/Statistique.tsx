@@ -89,8 +89,8 @@ function TrendBar({ day }: { day: DailyTrend }) {
 
 const PageStatistique: FC = () => {
 	return (
-		<div className="absolute w-full min-h-screen bg-gray-200/70 font-sans">
-			<div className="max-w-[1200px] mx-auto p-6">
+		<div className="w-full min-h-screen bg-gray-50 font-sans p-6">
+			<div className="max-w-[1200px] mx-auto">
 				<header className="mb-6">
 					<p className="text-sm font-semibold uppercase tracking-widest text-slate-500">
 						Tableau de bord

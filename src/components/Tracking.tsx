@@ -5,16 +5,21 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import AddIcon from "@mui/icons-material/Add";
 import ClearIcon from "@mui/icons-material/Clear";
 import CloseIcon from "@mui/icons-material/Close";
+import { useSearch } from "../contexts/SearchContext";
 
 function PageTracking() {
+  const { searchTerm, setSearchTerm: setSearchTermContext } = useSearch();
   const [trackings, setTrackings] = React.useState([
     {
       id: 1,
       tracking: "TN12345",
       nom: "Colis A",
-      statut: "En transit",
+      quantity: 2,
+      price: 1500,
       expediteur: "Alice",
       destinataire: "Bob",
+      adresse: "Alger, Algérie",
+      statut: "En transit",
       dateEnvoi: "20/11/2025",
       dateLivraison: "25/11/2025",
     },
@@ -22,9 +27,12 @@ function PageTracking() {
       id: 2,
       tracking: "TN12346",
       nom: "Colis B",
-      statut: "Livré",
+      quantity: 1,
+      price: 2500,
       expediteur: "Charlie",
       destinataire: "Ahmed",
+      adresse: "Oran, Algérie",
+      statut: "Livré",
       dateEnvoi: "18/11/2025",
       dateLivraison: "21/11/2025",
     },
@@ -32,15 +40,108 @@ function PageTracking() {
       id: 3,
       tracking: "TN12347",
       nom: "Colis C",
-      statut: "Retourné",
+      quantity: 1,
+      price: 1200,
       expediteur: "Mohamed",
       destinataire: "Sara",
+      adresse: "Constantine, Algérie",
+      statut: "Retourné",
       dateEnvoi: "19/11/2025",
       dateLivraison: "22/11/2025",
     },
+    {
+      id: 4,
+      tracking: "TN12348",
+      nom: "Colis D",
+      quantity: 3,
+      price: 3200,
+      expediteur: "Fatima",
+      destinataire: "Youssef",
+      adresse: "Blida, Algérie",
+      statut: "En transit",
+      dateEnvoi: "21/11/2025",
+      dateLivraison: "26/11/2025",
+    },
+    {
+      id: 5,
+      tracking: "TN12349",
+      nom: "Colis E",
+      quantity: 1,
+      price: 1800,
+      expediteur: "Karim",
+      destinataire: "Lina",
+      adresse: "Tizi Ouzou, Algérie",
+      statut: "En attente",
+      dateEnvoi: "22/11/2025",
+      dateLivraison: "27/11/2025",
+    },
+    {
+      id: 6,
+      tracking: "TN12350",
+      nom: "Colis F",
+      quantity: 2,
+      price: 2100,
+      expediteur: "Nadia",
+      destinataire: "Omar",
+      adresse: "Béjaïa, Algérie",
+      statut: "Livré",
+      dateEnvoi: "17/11/2025",
+      dateLivraison: "20/11/2025",
+    },
+    {
+      id: 7,
+      tracking: "TN12351",
+      nom: "Colis G",
+      quantity: 1,
+      price: 950,
+      expediteur: "Samir",
+      destinataire: "Leila",
+      adresse: "Annaba, Algérie",
+      statut: "En transit",
+      dateEnvoi: "23/11/2025",
+      dateLivraison: "28/11/2025",
+    },
+    {
+      id: 8,
+      tracking: "TN12352",
+      nom: "Colis H",
+      quantity: 4,
+      price: 4500,
+      expediteur: "Amel",
+      destinataire: "Rachid",
+      adresse: "Sétif, Algérie",
+      statut: "Livré",
+      dateEnvoi: "16/11/2025",
+      dateLivraison: "19/11/2025",
+    },
+    {
+      id: 9,
+      tracking: "TN12353",
+      nom: "Colis I",
+      quantity: 1,
+      price: 1350,
+      expediteur: "Bilal",
+      destinataire: "Salma",
+      adresse: "Batna, Algérie",
+      statut: "Retourné",
+      dateEnvoi: "15/11/2025",
+      dateLivraison: "18/11/2025",
+    },
+    {
+      id: 10,
+      tracking: "TN12354",
+      nom: "Colis J",
+      quantity: 2,
+      price: 2800,
+      expediteur: "Djamila",
+      destinataire: "Tarek",
+      adresse: "Mostaganem, Algérie",
+      statut: "En attente",
+      dateEnvoi: "24/11/2025",
+      dateLivraison: "29/11/2025",
+    },
   ]);
 
-  const [searchTerm, setSearchTerm] = React.useState("");
   const [showFilterModal, setShowFilterModal] = React.useState(false);
   const [filters, setFilters] = React.useState({
     statut: "",
@@ -134,7 +235,7 @@ function PageTracking() {
   };
 
   const handleResetFilter = () => {
-    setSearchTerm("");
+    setSearchTermContext("");
     setFilters({
       statut: "",
       expediteur: "",
@@ -152,23 +253,10 @@ function PageTracking() {
   );
 
   return (
-    <div className="font-sans p-4">
+    <div className="font-sans p-6 bg-gray-200/70">
       <div className="text-lg font-bold mb-4">Liste de suivi </div>
-
-      <div className="bg-gray-200/30 rounded-lg p-4 w-[98%] mx-auto">
-        <div className="mb-4 flex justify-between items-center">
-          <h3 className="text-xl font-normal ">Tracking :</h3>
-
-          <div className="flex justify-center">
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Rechercher par tracking, statut, destinataire..."
-              className="px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300 min-w-[240px]"
-            />
-          </div>
-
+      <div className="bg-white rounded-lg w-full mx-auto p-4">
+        <div className="flex justify-between items-center p-0 px-4 mb-4">
           <div className="flex justify-center gap-4 items-center">
             <button
               className="flex items-center gap-1 bg-transparent text-transparent px-3 py-1 rounded-md hover:scale-105 transition-transform"

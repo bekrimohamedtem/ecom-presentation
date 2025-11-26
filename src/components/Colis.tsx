@@ -5,8 +5,10 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import ClearIcon from "@mui/icons-material/Clear";
+import { useSearch } from "../contexts/SearchContext";
 
 function PageColis() {
+  const { searchTerm, setSearchTerm: setSearchTermContext } = useSearch();
   const [showAddModal, setShowAddModal] = React.useState(false);
   const [showEditModal, setShowEditModal] = React.useState(false);
   const [showFilterModal, setShowFilterModal] = React.useState(false);
@@ -70,9 +72,99 @@ function PageColis() {
       dateEnvoi: "19/11/2025",
       dateLivraison: "22/11/2025",
     },
+    {
+      numero: 4,
+      tracking: "TN12348",
+      nom: "Colis D",
+      quantity: 3,
+      price: 3200,
+      expediteur: "Fatima",
+      destinataire: "Youssef",
+      adresse: "Blida, Algérie",
+      statut: "En transit",
+      dateEnvoi: "21/11/2025",
+      dateLivraison: "26/11/2025",
+    },
+    {
+      numero: 5,
+      tracking: "TN12349",
+      nom: "Colis E",
+      quantity: 1,
+      price: 1800,
+      expediteur: "Karim",
+      destinataire: "Lina",
+      adresse: "Tizi Ouzou, Algérie",
+      statut: "En attente",
+      dateEnvoi: "22/11/2025",
+      dateLivraison: "27/11/2025",
+    },
+    {
+      numero: 6,
+      tracking: "TN12350",
+      nom: "Colis F",
+      quantity: 2,
+      price: 2100,
+      expediteur: "Nadia",
+      destinataire: "Omar",
+      adresse: "Béjaïa, Algérie",
+      statut: "Livré",
+      dateEnvoi: "17/11/2025",
+      dateLivraison: "20/11/2025",
+    },
+    {
+      numero: 7,
+      tracking: "TN12351",
+      nom: "Colis G",
+      quantity: 1,
+      price: 950,
+      expediteur: "Samir",
+      destinataire: "Leila",
+      adresse: "Annaba, Algérie",
+      statut: "En transit",
+      dateEnvoi: "23/11/2025",
+      dateLivraison: "28/11/2025",
+    },
+    {
+      numero: 8,
+      tracking: "TN12352",
+      nom: "Colis H",
+      quantity: 4,
+      price: 4500,
+      expediteur: "Amel",
+      destinataire: "Rachid",
+      adresse: "Sétif, Algérie",
+      statut: "Livré",
+      dateEnvoi: "16/11/2025",
+      dateLivraison: "19/11/2025",
+    },
+    {
+      numero: 9,
+      tracking: "TN12353",
+      nom: "Colis I",
+      quantity: 1,
+      price: 1350,
+      expediteur: "Bilal",
+      destinataire: "Salma",
+      adresse: "Batna, Algérie",
+      statut: "Retourné",
+      dateEnvoi: "15/11/2025",
+      dateLivraison: "18/11/2025",
+    },
+    {
+      numero: 10,
+      tracking: "TN12354",
+      nom: "Colis J",
+      quantity: 2,
+      price: 2800,
+      expediteur: "Djamila",
+      destinataire: "Tarek",
+      adresse: "Mostaganem, Algérie",
+      statut: "En attente",
+      dateEnvoi: "24/11/2025",
+      dateLivraison: "29/11/2025",
+    },
   ]);
 
-  const [searchTerm, setSearchTerm] = React.useState("");
   const [filteredColis, setFilteredColis] = React.useState(colis);
 
   React.useEffect(() => {
@@ -241,7 +333,7 @@ function PageColis() {
   };
 
   const handleResetFilter = () => {
-    setSearchTerm("");
+    setSearchTermContext("");
     setFilters({
       statut: "",
       expediteur: "",
@@ -257,34 +349,22 @@ function PageColis() {
   );
 
   return (
-    <div className="font-roboto">
-      <div className="text-lg font-bold m-4">Colis list</div>
-      <div className="bg-gray-200 rounded-lg w-[98%] mx-auto p-4 relative bottom-0">
-        <div className="flex justify-between items-center p-0 px-4 mb-4">
-          <h3 className="text-[20px] font-normal">Colis :</h3>
-
-          <div>
-            <input
-              type="text"
-              placeholder="Rechercher par tracking, nom, statut..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="px-4 py-2 rounded-full border border-gray-300 bg-white min-w-[240px] text-sm outline-none focus:border-gray-400 focus:ring-2 focus:ring-blue-300"
-            />
-          </div>
-
+    <div className="font-roboto p-6 bg-gray-200/70">
+      <div className="text-lg font-bold mb-4">Liste des colis</div>
+      <div className="bg-white rounded-lg w-full mx-auto p-4">
+        <div className="flex justify-end items-center p-0 px-4 mb-4">
           <div className="flex gap-4 items-center">
             <button
               onClick={handleAddColis}
-              className="bg-black text-white px-2 py-1 rounded-md cursor-pointer transition-transform hover:scale-105 flex items-center gap-1"
+              className="flex items-center gap-1 bg-black text-white px-3 py-1 rounded-md hover:scale-105 transition-transform"
             >
-              <AddIcon /> add colis
+              <AddIcon /> Ajouter
             </button>
             <button
-              className="bg-blue-600 text-white px-2 py-1 rounded-md cursor-pointer transition-transform hover:scale-105 flex items-center gap-1"
+              className="flex items-center gap-1 bg-blue-600 text-white px-3 py-1 rounded-md hover:scale-105 transition-transform"
               onClick={handleFilter}
             >
-              <FilterListIcon /> Filter
+              <FilterListIcon /> Filtrer
             </button>
             {(searchTerm ||
               filters.statut ||
@@ -301,8 +381,8 @@ function PageColis() {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full bg-white rounded-md  table-fixed border-separate border-spacing-2 text-center text-black">
+        <div className="overflow-x-auto w-full">
+          <table className="min-w-full bg-white rounded-md table-auto border-separate border-spacing-2 text-center text-black">
             <thead>
               <tr>
                 {[
@@ -328,7 +408,7 @@ function PageColis() {
 
             <tbody>
               {filteredColis.map((c) => (
-                <tr key={c.tracking} className=" rounded-md">
+                <tr key={c.tracking} className=" rounded-md mb-5">
                   <td className="p-1 text-[14px] font-normal text-gray-700">
                     {c.tracking}
                   </td>
