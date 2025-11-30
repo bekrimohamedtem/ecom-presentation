@@ -27,7 +27,11 @@ function DataTable({
               {columns.map((column) => (
                 <th
                   key={column.key}
-                  className="px-4 py-3 text-left text-sm font-bold text-gray-700 border-b"
+                  className={`px-4 py-3 text-sm font-bold text-gray-700 border-b ${
+                    column.key === "affectation" || column.key === "actions"
+                      ? "text-center"
+                      : "text-left"
+                  }`}
                 >
                   {column.label}
                 </th>
@@ -59,7 +63,9 @@ function DataTable({
                   {columns.map((column) => (
                     <td
                       key={column.key}
-                      className="px-4 py-3 text-sm text-gray-700 p-2"
+                      className={`px-4 py-3 text-sm text-gray-700 ${
+                        column.key === "affectation" ? "text-center" : ""
+                      }`}
                     >
                       {column.render
                         ? column.render(row[column.key], row)
@@ -67,7 +73,7 @@ function DataTable({
                     </td>
                   ))}
                   {actions && (
-                    <td className="flex justify-center gap-2 p-2">
+                    <td className="text-center px-4 py-3">
                       {actions(row)}
                     </td>
                   )}
